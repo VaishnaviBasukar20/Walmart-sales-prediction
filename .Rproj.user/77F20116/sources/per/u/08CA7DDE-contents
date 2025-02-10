@@ -1,0 +1,44 @@
+
+# Load necessary libraries
+library(readr)
+library(caret)
+library(randomForest)
+library(e1071)  # For SVM
+library(ggplot2)
+install.packages("Metrics")
+library(Metrics)  # For RMSE
+
+# Load the dataset
+data <- read.csv("dataset/Walmart_Sales.csv")
+
+# View the first few rows to understand the structure
+head(data)
+
+# Assuming 'Weekly_Sales' is the target variable
+target_variable <- "Weekly_Sales"
+
+# Split the data into training and test sets
+set.seed(123)
+trainIndex <- createDataPartition(data[[target_variable]], p = 0.8, list = FALSE)
+train_data <- data[trainIndex, ]
+test_data <- data[-trainIndex, ]
+
+# Prepare a function to calculate RMSE and return a data frame
+calculate_rmse <- function(model, test_data, target_variable) {
+  predictions <- predict(model, test_data)
+  rmse_value <- rmse(test_data[[target_variable]], predictions)
+  return(rmse_value)
+}
+
+# Define a vector to store RMSE values
+rmse_values <- data.frame(Model = character(), RMSE = numeric(), stringsAsFactors = FALSE)
+
+# Linear Regression
+linear_model <- lm(as.formula(paste(target_variable, "~ .")), data = train_data)
+linear_rmse <- calculate_rmse(linear_model, test_data, target_variable)
+rmse_values <- rbind(rmse_values, data.frame(Model = "Linear Regression", RMSE = linear_rmse))
+
+# Polynomial Regression (2nd degree)
+poly_model <- lm(as.formula(paste(target_variable, "~ poly(. , 2)")), data = train_data)
+poly_rmse <- calculate_rmse(poly_model, test_data, target_variable)
+rmse_values <- rbind(rmse_values, data.frame(Model = "Polynomial Regression", RMSE = poly_rmse))

@@ -1,0 +1,55 @@
+View(iris)
+iris1=iris
+iris1
+iris1$Species=NULL #null used for delelting 
+View(iris1)
+#calculating the eucliedan distance btw every pair of dat points
+#in iris 
+#this distance will help the clustering algorithm decide which points are close to each other
+d=dist(iris1,method='euclidean')
+# we are finding the euclidean 
+d
+#applies hierarchical clustering using the average linkage method
+#hireranchical clustering builds a tree like structure called a dentrogram where 
+#the average linkage method calculates the av=verage distance btw clusteras to decide
+#how to merge them
+
+hfit=hclust(d,method="average")
+hfit
+#plot a dendrogram which shows howa clusters are formed at different distances
+plot(hfit)
+
+#divides the dendrogram into 4 clusters 
+grps=cutree(hfit,k=4p)
+grps
+#we draw rectangle saround the clusters
+#in the dendrogram for 2 cludsters in red and 4 clusters in blue
+#this visually shows how the data ponts are grouped at different levels
+#red rectangles show the two larger clusters
+#blue shows four small clusters 
+rect.hclust(hfit,k=2,border="red")
+rect.hclust(hfit,k=4,border="blue")
+
+
+
+#####################code for Carseats data set########################
+install.packages("ISLR")
+library(ISLR)
+View(Carseats)
+Carseats1=Carseats
+Carseats1$ShelveLoc=NULL
+Carseats1$Urban=NULL
+Carseats1$US=NULL
+Carseats1
+d=dist(Carseats1,method='euclidean')
+# we are finding the euclidean 
+d
+hfit=hclust(d,method="average")
+hfit
+#plot a dendrogram which shows howa clusters are formed at different distances
+plot(hfit)
+grps=cutree(hfit,k=4)
+grps
+rect.hclust(hfit,k=2,border="red")
+rect.hclust(hfit,k=4,border="blue")
+
